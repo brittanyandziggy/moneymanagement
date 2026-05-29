@@ -31,3 +31,5 @@ jobs:
           JSONBIN_MASTER_KEY:       ${{ secrets.JSONBIN_MASTER_KEY }}
           JSONBIN_BIN_ID:           ${{ secrets.JSONBIN_BIN_ID }}
           ALLOWED_TELEGRAM_USER_ID: ${{ secrets.ALLOWED_TELEGRAM_USER_ID }}
+          POLL_TIMEOUT:             "50"
+          
