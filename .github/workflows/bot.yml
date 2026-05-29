@@ -1,0 +1,33 @@
+name: up-finance-bot
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"   # every 5 minutes (GitHub's minimum interval)
+  workflow_dispatch: {}      # also lets you trigger a run manually from the Actions tab
+
+# Don't let two runs poll Telegram at the same time (that causes 409 conflicts).
+concurrency:
+  group: up-finance-bot
+  cancel-in-progress: false
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6       # safety net so a stuck run can't burn minutes forever
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install -r requirements.txt
+
+      - run: python bot.py
+        env:
+          TELEGRAM_BOT_TOKEN:       ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          UP_API_TOKEN:             ${{ secrets.UP_API_TOKEN }}
+          ANTHROPIC_API_KEY:        ${{ secrets.ANTHROPIC_API_KEY }}
+          JSONBIN_MASTER_KEY:       ${{ secrets.JSONBIN_MASTER_KEY }}
+          JSONBIN_BIN_ID:           ${{ secrets.JSONBIN_BIN_ID }}
+          ALLOWED_TELEGRAM_USER_ID: ${{ secrets.ALLOWED_TELEGRAM_USER_ID }}
